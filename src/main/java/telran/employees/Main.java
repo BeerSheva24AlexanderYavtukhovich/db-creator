@@ -1,12 +1,25 @@
 package telran.employees;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Main {
     public static void main(String[] args) {
-        // TODO generating employes-sql-data.csv
-        // example: :
-        // 1,Employee, 15000,QA,,,,,
-        // 2,Manager,12000,QA,2.0,,,,
-        // 3,WageEmployee,12000,QA,,100,100,,
-        // 4,SalesPerson,12000,QA,,100,100,0.1,100000
+        try (FileWriter writer = new FileWriter(Params.FILE_NAME)) {
+            EmployeeGenerator employeeGenerator = new EmployeeGenerator();
+            int idCounter = Params.MIN_ID;
+
+            for (var departmentEntry : Params.DEPARTMENT_ROLES.entrySet()) {
+                String department = departmentEntry.getKey();
+                for (var roleEntry : departmentEntry.getValue().entrySet()) {
+                    String role = roleEntry.getKey();
+                    int count = roleEntry.getValue();
+                    idCounter = employeeGenerator.generateEmployees(writer, idCounter, role, department, count);
+                }
+            }
+
+        } catch (IOException e) {
+            e.getMessage();
+        }
     }
 }
